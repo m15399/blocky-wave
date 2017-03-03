@@ -1,0 +1,71 @@
+<body>
+<script>
+
+var width = 1000;
+var height = 800;
+
+var canvas = document.createElement('canvas');
+canvas.width = width;
+canvas.height = height;
+var g = canvas.getContext('2d');
+document.body.appendChild(canvas);
+
+var canvas2 = document.createElement('canvas');
+canvas2.width = 800;
+canvas2.height = canvas2.width;
+var g2 = canvas2.getContext('2d');
+
+var ss = 20;
+var sideSquares = Math.floor((canvas2.width - ss) / ss);
+var numSquares = sideSquares * sideSquares;
+
+var heights = [];
+for(var i = 0; i < numSquares; i++)
+	heights[i] = Math.random();
+
+function Update(){
+	var t = new Date().getTime() / 1000;
+
+	g.fillStyle = '#123';
+	g.fillRect(0, 0, width, height);
+
+
+	g2.clearRect(0, 0, canvas2.width, canvas2.height);
+	g2.fillStyle = '#246';
+	g2.fillRect(0, ss * 2, canvas2.width - ss * 2, canvas2.height);
+
+	for(var j = 1; j < sideSquares; j++){
+		for(var i = 0; i < sideSquares - 1; i++){
+			var b = heights[j * sideSquares + i] * .3;
+			b += .7 * (Math.sin(t * .6 + i / 10 + j / 4) + 1) / 2;
+
+			var h = b * 25 + 10;
+			g2.fillStyle = 'rgba(255, 255, 255, ' + Math.max(b, 0) + ')';
+			g2.fillRect(i * ss + h, (j + 1) * ss - h, ss, ss);
+		}
+	}
+
+	function DrawIso(image){
+		g.save();
+
+		g.translate(width/2, height/2);
+		var a = Math.PI/6;
+		var s = Math.cos(a);
+		g.scale(Math.cos(a) * s, Math.sin(a) * s);
+		g.rotate(-Math.PI/4);
+		g.translate(-image.width/2, -image.height/2);
+		g.drawImage(image, 0, 0);
+
+		g.restore();
+	};
+
+	DrawIso(canvas2);
+}
+
+Update();
+// Update();
+window.setInterval(Update, 1000/30);
+
+</script>
+
+</body>
